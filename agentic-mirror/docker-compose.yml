@@ -1,0 +1,39 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  worker-1:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8001:8001"
+
+  worker-2:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "8002:8001"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CACHE_TTL_SECONDS=60
+      - CLIENT_RATE=50
+      - CLIENT_BURST=100
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - worker-1
+      - worker-2

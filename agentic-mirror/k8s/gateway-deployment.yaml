@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agentic-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agentic-gateway
+  template:
+    metadata:
+      labels:
+        app: agentic-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: agentic-gateway:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: REDIS_URL
+              value: redis://redis:6379/0
+            - name: CACHE_TTL_SECONDS
+              value: "60"
+            - name: CLIENT_RATE
+              value: "50"
+            - name: CLIENT_BURST
+              value: "100"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentic-gateway
+spec:
+  selector:
+    app: agentic-gateway
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
