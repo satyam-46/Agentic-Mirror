@@ -15,6 +15,7 @@ spec:
       containers:
         - name: worker
           image: agentic-worker:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8001
           resources:

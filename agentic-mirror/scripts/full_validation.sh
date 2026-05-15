@@ -132,6 +132,10 @@ if ! kubectl config current-context >/dev/null 2>&1; then
   exit 0
 fi
 
+echo "Building Kubernetes images"
+docker build -t agentic-gateway:latest -f gateway/Dockerfile .
+docker build -t agentic-worker:latest -f worker/Dockerfile .
+
 echo "Applying Kubernetes manifests"
 kubectl apply -f k8s/
 kubectl rollout status deployment/agentic-worker --timeout=180s

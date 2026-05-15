@@ -29,8 +29,8 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379/0
       - CACHE_TTL_SECONDS=60
-      - CLIENT_RATE=50
-      - CLIENT_BURST=100
+      - CLIENT_RATE=100
+      - CLIENT_BURST=200
     ports:
       - "8000:8000"
     depends_on:
